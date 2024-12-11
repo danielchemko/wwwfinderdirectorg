@@ -1,2 +1,0 @@
-# wwwfinderdirectorg
-www.finderdirect.org
