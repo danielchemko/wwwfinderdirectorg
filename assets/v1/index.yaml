@@ -1,0 +1,7 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    rel:
+      - /releases/finder-direct/

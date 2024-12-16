@@ -1,0 +1,15 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    releases:
+      - release: 1.0.0
+        agent:
+          min-version: 1
+          max-version: 1
+        rel:
+          - /addons/finder-direct/
+          - /bundles/finder-direct/
+          - /installers/finder-direct/
+          - /integrations/finder-direct/

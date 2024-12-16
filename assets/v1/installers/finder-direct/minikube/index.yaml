@@ -1,0 +1,130 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: minikube
+        name: MiniKube
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            requirements:
+              os-major: "> 10"
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe"
+            commands:
+              - command: "minikube-installer.exe"
+                elevated: true
+                style: command
+                args:
+                  - "/S"
+              - command: "minikube.exe"
+                elevated: true
+                style: command
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                  - question: home-server-size
+                    answers:
+                      - answer: lite
+                        values:
+                          cpus: 2
+                          ram: 2GB
+                          storage: lite
+                      - answer: regular
+                        values:
+                          cpus: 4
+                          ram: 8GB
+                          storage: unlimited
+                      - answer: regular
+                        values:
+                          cpus: 8
+                          ram: 16GB
+                          storage: unlimited
+                args:
+                  - " start ${}"
+          - platform:
+              arch: amd64
+              os: osx
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64"
+            commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "${disk-location}"
+              - command: "mv"
+                args:
+                  - "minikube-darwin-amd64"
+                  - "/Applications/Minikube/minikube"
+                elevated: true
+                style: exec
+              - command: "minikube"
+                elevated: true
+                style: exec
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                  - question: home-server-size
+                    answers:
+                      - answer: lite
+                        values:
+                          cpus: 2
+                          ram: 2GB
+                          storage: lite
+                      - answer: regular
+                        values:
+                          cpus: 4
+                          ram: 8GB
+                          storage: unlimited
+                      - answer: regular
+                        values:
+                          cpus: 8
+                          ram: 16GB
+                          storage: unlimited
+          - platform:
+              arch: amd64
+              os: linux
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+            commands:
+              - command: "mv"
+                args:
+                  - "minikube-linux-amd64"
+                  - "${disk-location}"
+                elevated: true
+                style: exec
+              - command: "minikube"
+                elevated: true
+                style: exec
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                  - question: home-server-size
+                    answers:
+                      - answer: lite
+                        values:
+                          cpus: 2
+                          ram: 2GB
+                          storage: lite
+                      - answer: regular
+                        values:
+                          cpus: 4
+                          ram: 8GB
+                          storage: unlimited
+                      - answer: regular
+                        values:
+                          cpus: 8
+                          ram: 16GB
+                          storage: unlimited

@@ -1,0 +1,30 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    bundles:
+      - bundle: core
+        agent:
+          min-version: 1
+        installers:
+          - vendor: finder-direct
+            installer: minikube
+          - vendor: finder-direct
+            installer: istio
+          - vendor: finder-direct
+            installer: registry
+          - vendor: finder-direct
+            installer: object-store-lite
+      - bundle: media
+        agent:
+          min-version: 1
+        installers:
+          - vendor: finder-direct
+            installer: minikube
+          - vendor: finder-direct
+            installer: istio
+          - vendor: finder-direct
+            installer: registry
+          - vendor: finder-direct
+            installer: object-store-lite

@@ -1,0 +1,10 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    integrations:
+      - integration: crystalball
+        agent:
+          min-version: 1
+          max-version: 1

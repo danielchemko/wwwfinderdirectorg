@@ -1,0 +1,38 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    addons:
+      - addon: marketplace
+        tier: oss
+        releases:
+          - version: 1.0.0
+            agent:
+              min-version: 1
+              max-version: 1
+            package:
+              type: jar
+              primary: "http://www.finder-direct.org/download/v1/addons/marketplace.jar"
+              alternates:
+                - "http://backup.finder-direct.org/download/v1/addons/marketplace.jar"
+              verifications:
+                - type: gpg
+                  signature: |-
+                    4323423nb4h23j4g23b4hj23g42h3j42g342h3j42g34hj234g23h4j23g42h3j4g2342h3j4g234hj234g23h4j23
+      - addon: remote-install
+        tier: oss
+        releases:
+          - version: 1.0.0
+            agent:
+              min-version: 1
+              max-version: 1
+            package:
+              type: jar
+              primary: "http://www.finder-direct.org/download/v1/addons/remote-install.jar"
+              alternates:
+                - "http://backup.finder-direct.org/download/v1/addons/remote-install.jar"
+              verifications:
+                - type: gpg
+                  signature: |-
+                    4323423nb4h23j4g23b4hj23g42h3j42g342h3j42g34hj234g23h4j23g42h3j4g2342h3j4g234hj234g23h4j23
