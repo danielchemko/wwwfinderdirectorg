@@ -18,20 +18,28 @@ vendors:
                   type: os-executable
                   primary: "https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe"
             commands:
-              - command: "minikube-installer.exe"
-                elevated: true
-                style: command
+              - command: |-
+                  ${artifacts}\minikube-installer.exe
                 args:
                   - "/S"
+                cwd: |-
+                  ${artifacts}
+                elevated: true
+                style: command
               - command: "minikube.exe"
+                args:
+                  - "start"
+                  - "--cpus=${ask:cpus}"
+                  - "--memory=${ask:ram}"
+                cwd: |-
+                  ${env:ProgramFiles}\Kubernetes\Minikube
                 elevated: true
                 style: command
                 questions:
-                  - question: disk-location
-                    context: target-disk-location
                   - question: home-server-size
                     answers:
-                      - answer: lite
+                      - default: true
+                        answer: lite
                         values:
                           cpus: 2
                           ram: 2GB
@@ -41,13 +49,11 @@ vendors:
                           cpus: 4
                           ram: 8GB
                           storage: unlimited
-                      - answer: regular
+                      - answer: heavy
                         values:
                           cpus: 8
                           ram: 16GB
                           storage: unlimited
-                args:
-                  - " start ${}"
           - platform:
               arch: amd64
               os: osx
@@ -64,18 +70,28 @@ vendors:
               - command: "mv"
                 args:
                   - "minikube-darwin-amd64"
-                  - "/Applications/Minikube/minikube"
+                  - "${disk-location}"
+                cwd: |-
+                  ${artifacts}
                 elevated: true
                 style: exec
+              - command: "chmod"
+                cwd: |-
+                  ${disk-location}
+                args:
+                  - "ugo"
+                  - "minikube-darwin-amd64"
               - command: "minikube"
                 elevated: true
                 style: exec
                 questions:
                   - question: disk-location
                     context: target-disk-location
+                    default: /Applications/Minikube/minikube
                   - question: home-server-size
                     answers:
-                      - answer: lite
+                      - default: true
+                        answer: lite
                         values:
                           cpus: 2
                           ram: 2GB
@@ -85,7 +101,7 @@ vendors:
                           cpus: 4
                           ram: 8GB
                           storage: unlimited
-                      - answer: regular
+                      - answer: heavy
                         values:
                           cpus: 8
                           ram: 16GB
@@ -99,21 +115,39 @@ vendors:
                   type: os-executable
                   primary: "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
             commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "${disk-location}"
               - command: "mv"
                 args:
                   - "minikube-linux-amd64"
-                  - "${disk-location}"
+                  - "${disk-location}/minikube"
+                cwd: |-
+                  ${artifacts}
                 elevated: true
                 style: exec
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                    default: /user/local/bin
+              - command: "chmod"
+                cwd: |-
+                  ${disk-location}
+                args:
+                  - "ugo+x"
+                  - "minikube"
               - command: "minikube"
                 elevated: true
                 style: exec
                 questions:
                   - question: disk-location
                     context: target-disk-location
+                    default: /user/local/bin
                   - question: home-server-size
                     answers:
-                      - answer: lite
+                      - default: true
+                        answer: lite
                         values:
                           cpus: 2
                           ram: 2GB
@@ -123,7 +157,7 @@ vendors:
                           cpus: 4
                           ram: 8GB
                           storage: unlimited
-                      - answer: regular
+                      - answer: heavy
                         values:
                           cpus: 8
                           ram: 16GB
