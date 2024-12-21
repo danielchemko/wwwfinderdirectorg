@@ -1,0 +1,72 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: kubectl
+        name: Kubernetes Control (kubectl)
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://dl.k8s.io/release/v1.32.0/bin/windows/amd64/kubectl.exe"
+                # Verification "https://dl.k8s.io/v1.32.0/bin/windows/amd64/kubectl.exe.sha256"
+            commands:
+              - command: ~
+                style: copy
+                args:
+                  - "${artifacts}/kubectl.exe"
+                  - "${binary-cache}/kubectl.exe"
+          - platform:
+              arch: amd64
+              os: linux
+            version: 1
+            artifacts:
+              - package:
+                  type: misc
+                  primary: "https://dl.k8s.io/release/stable.txt"
+                  replace: true
+              - package:
+                  type: os-executable
+                  primary: "https://dl.k8s.io/release/${release-version}/bin/linux/amd64/kubectl"
+                  questions:
+                    - question: release-version
+                      context: read-file
+                      default: "${artifacts}/stable.txt"
+            commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "/tmp/7ztemp"
+              - command: "cp"
+                args:
+                  - "7z2409-linux-x64.tar.xz"
+                  - "/tmp/7ztemp"
+                cwd: |-
+                  ${artifacts}
+              - command: "tar"
+                args:
+                  - "xf"
+                  - "7z2409-linux-x64.tar.xz"
+                cwd: |-
+                  /tmp/7ztemp
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                    default: /user/local/bin
+              - command: "mv"
+                cwd: |-
+                  /tmp/7ztemp
+                args:
+                  - "7zz"
+                  - "7zzs"
+                  - ${target-disk-location}
+              - command: "rm"
+                args:
+                  - "-rf"
+                  - "/tmp/7ztemp"

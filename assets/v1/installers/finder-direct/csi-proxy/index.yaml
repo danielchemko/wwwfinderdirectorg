@@ -1,0 +1,37 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: csi-proxy
+        name: Container to OS Storage Proxy
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://7-zip.org/a/7z2409-x64.exe"
+              - package:
+                  type: powershell-script
+                  primary: "${asset-root}/installers/finder-direct/csi-proxy/csi-proxy-service-install.ps1"
+            commands:
+              - command: |-
+                  ${artifacts}\7z2409-x64.exe
+                args:
+                  - "/S"
+                cwd: |-
+                  ${artifacts}
+                elevated: true
+                style: command
+              - command: "powershell"
+                args:
+                  - "${artifacts}/csi-proxy-service-install.ps1"
+                cwd: |-
+                  ${artifacts}
+                elevated: true
+                style: command
+

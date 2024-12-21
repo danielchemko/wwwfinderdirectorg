@@ -2,4 +2,11 @@ version: 1
 manifest: index
 
 rel:
+  - /installers/finder-direct/7zip/
+  - /installers/finder-direct/helm/
+  - /installers/finder-direct/istio/
+  - /installers/finder-direct/kubectl/
   - /installers/finder-direct/minikube/
+  - /installers/finder-direct/microk8s/
+  - /installers/finder-direct/ingress-setup/
+#  - /installers/finder-direct/csi-proxy/ -- DEAD end until we can get a binary to install

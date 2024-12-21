@@ -1,0 +1,68 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: istio
+        name: ISTIO
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            commands:
+              - command: "${binary-cache}\\helm.exe"
+                args: [ "repo", "add", "istio", "https://istio-release.storage.googleapis.com/charts" ]
+                style: command
+              - command: "${binary-cache}\\helm.exe"
+                args: [ "repo", "update" ]
+                style: command
+              - command: "${binary-cache}\\helm.exe"
+                args: [ "install", "istio-base", "istio/base", "-n", "istio-system", "--set", "defaultRevision=default", "--create-namespace", "--wait" ]
+              - command: "${binary-cache}\\helm.exe"
+                args: [ "install", "istiod", "istio/istiod", "-n", "istio-system", "--wait" ]
+              - command: "${binary-cache}\\kubectl.exe"
+                args: [ "create", "namespace", "istio-ingress" ]
+              - command: "${binary-cache}\\helm.exe"
+                args: [ "install", "istio-ingressgateway", "istio/gateway", "-n", "istio-ingress", "--wait" ]
+          - platform:
+              arch: amd64
+              os: linux
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://7-zip.org/a/7z2409-linux-x64.tar.xz"
+            commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "/tmp/7ztemp"
+              - command: "cp"
+                args:
+                  - "7z2409-linux-x64.tar.xz"
+                  - "/tmp/7ztemp"
+                cwd: |-
+                  ${artifacts}
+              - command: "tar"
+                args:
+                  - "xf"
+                  - "7z2409-linux-x64.tar.xz"
+                cwd: |-
+                  /tmp/7ztemp
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                    default: /user/local/bin
+              - command: "mv"
+                cwd: |-
+                  /tmp/7ztemp
+                args:
+                  - "7zz"
+                  - "7zzs"
+                  - ${target-disk-location}
+              - command: "rm"
+                args:
+                  - "-rf"
+                  - "/tmp/7ztemp"

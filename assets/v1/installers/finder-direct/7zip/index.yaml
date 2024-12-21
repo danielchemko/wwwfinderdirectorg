@@ -1,0 +1,66 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: 7zip
+        name: 7-Zip
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://7-zip.org/a/7z2409-x64.exe"
+            commands:
+              - command: |-
+                  ${artifacts}\7z2409-x64.exe
+                args:
+                  - "/S"
+                cwd: |-
+                  ${artifacts}
+                elevated: true
+                style: command
+          - platform:
+              arch: amd64
+              os: linux
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://7-zip.org/a/7z2409-linux-x64.tar.xz"
+            commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "/tmp/7ztemp"
+              - command: "cp"
+                args:
+                  - "7z2409-linux-x64.tar.xz"
+                  - "/tmp/7ztemp"
+                cwd: |-
+                  ${artifacts}
+              - command: "tar"
+                args:
+                  - "xf"
+                  - "7z2409-linux-x64.tar.xz"
+                cwd: |-
+                  /tmp/7ztemp
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                    default: /user/local/bin
+              - command: "mv"
+                cwd: |-
+                  /tmp/7ztemp
+                args:
+                  - "7zz"
+                  - "7zzs"
+                  - ${target-disk-location}
+              - command: "rm"
+                args:
+                  - "-rf"
+                  - "/tmp/7ztemp"

@@ -1,0 +1,66 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: helm
+        name: Kubernetes Helm
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://get.helm.sh/helm-v3.16.4-windows-amd64.zip"
+            commands:
+              - command: |-
+                  ${env:ProgramW6432}\7-Zip\7z.exe
+                args:
+                  - "e"
+                  - "helm-v3.16.4-windows-amd64.zip"
+                  - "-o${binary-cache}"
+                  - "windows-amd64\\helm.exe"
+                cwd: |-
+                  ${artifacts}
+                style: command
+          - platform:
+              arch: amd64
+              os: linux
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://get.helm.sh/helm-v3.16.4-linux-amd64.tar.gz"
+            commands:
+              - command: "mkdir"
+                args:
+                  - "-p"
+                  - "/tmp/7ztemp"
+              - command: "cp"
+                args:
+                  - "7z2409-linux-x64.tar.xz"
+                  - "/tmp/7ztemp"
+                cwd: |-
+                  ${artifacts}
+              - command: "tar"
+                args:
+                  - "xf"
+                  - "7z2409-linux-x64.tar.xz"
+                cwd: |-
+                  /tmp/7ztemp
+                questions:
+                  - question: disk-location
+                    context: target-disk-location
+                    default: /user/local/bin
+              - command: "mv"
+                cwd: |-
+                  /tmp/7ztemp
+                args:
+                  - "7zz"
+                  - "7zzs"
+                  - ${binary-cache}
+
+

@@ -31,20 +31,26 @@ vendors:
                   - "start"
                   - "--cpus=${ask:cpus}"
                   - "--memory=${ask:ram}"
+                  - "--mount"
+                  - "--mount-string=${ask:network-mount-dir}"
+                  - "--mount-port=44332"
                 cwd: |-
                   ${env:ProgramFiles}\Kubernetes\Minikube
                 elevated: true
                 style: command
                 questions:
+                  - question: network-mount-dir
+                    context: target-disk-location
+                    default: "${local-cluster-root}:/cluster_data"
                   - question: home-server-size
                     answers:
-                      - default: true
-                        answer: lite
+                      - answer: lite
                         values:
                           cpus: 2
                           ram: 2GB
                           storage: lite
-                      - answer: regular
+                      - default: true
+                        answer: regular
                         values:
                           cpus: 4
                           ram: 8GB
@@ -54,6 +60,27 @@ vendors:
                           cpus: 8
                           ram: 16GB
                           storage: unlimited
+              - command: "minikube.exe"
+                args: [ "addons", "enable", "ingress" ]
+                elevated: true
+              - command: "minikube.exe"
+                args: [ "addons", "enable", "ingress-dns" ]
+                elevated: true
+#              - command: "minikube.exe"
+#                args: [ "addons", "enable", "csi-hostpath-driver" ]
+#                elevated: true
+#              - command: "minikube.exe"
+#                args: [ "addons", "enable", "volumesnapshots" ]
+#                elevated: true
+              - command: "minikube.exe"
+                args: [ "addons", "enable", "ingress" ]
+                elevated: true
+              - command: "minikube.exe"
+                args: [ "addons", "enable", "yakd" ]
+                elevated: true
+              - command: "minikube.exe"
+                args: [ "service", "yakd-dashboard", "-n", "yakd-dashboard" ]
+                elevated: true
           - platform:
               arch: amd64
               os: osx
