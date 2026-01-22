@@ -9,4 +9,5 @@ rel:
   - /installers/finder-direct/minikube/
   - /installers/finder-direct/microk8s/
   - /installers/finder-direct/ingress-setup/
-#  - /installers/finder-direct/csi-proxy/ -- DEAD end until we can get a binary to install
+  - /installers/finder-direct/nssm/
+  - /installers/finder-direct/homebox-host-agent/

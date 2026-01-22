@@ -1,0 +1,28 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: homebox-host-agent
+        name: Homebox Host Agent
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://finderdirect.org/download/host_agent/windows/homebox-host-agent-0.0.1.zip"
+            commands:
+              - command: |-
+                  ${env:ProgramW6432}\7-Zip\7z.exe
+                args:
+                  - "e"
+                  - "nssm-2.24.zip"
+                  - "-o${binary-cache}"
+                  - "homebox-host-agent.exe"
+                cwd: |-
+                  ${artifacts}
+                style: command

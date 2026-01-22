@@ -1,0 +1,47 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: nssm
+        name: Non-Sucking Service Manager
+        variants:
+          - platform:
+              arch: amd64
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://nssm.cc/release/nssm-2.24.zip"
+            commands:
+              - command: |-
+                  ${env:ProgramW6432}\7-Zip\7z.exe
+                args:
+                  - "e"
+                  - "nssm-2.24.zip"
+                  - "-o${binary-cache}"
+                  - "nssm-2.24\\win64\\nssm.exe"
+                cwd: |-
+                  ${artifacts}
+                style: command
+          - platform:
+              arch: amd32
+              os: windows
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                  primary: "https://nssm.cc/release/nssm-2.24.zip"
+            commands:
+              - command: |-
+                  ${env:ProgramW6432}\7-Zip\7z.exe
+                args:
+                  - "e"
+                  - "nssm-2.24.zip"
+                  - "-o${binary-cache}"
+                  - "nssm-2.24\\win32\\nssm.exe"
+                cwd: |-
+                  ${artifacts}
+                style: command
