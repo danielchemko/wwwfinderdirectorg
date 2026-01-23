@@ -1,0 +1,12 @@
+version: 1
+manifest: index
+
+rel:
+- urls: [ /installers/finder-direct/windows/amd64/helm/ ]
+- urls: [ /installers/finder-direct/windows/amd64/istio/ ]
+- urls: [ /installers/finder-direct/windows/amd64/kubectl/ ]
+- urls: [ /installers/finder-direct/windows/amd64/minikube/ ]
+- urls: [ /installers/finder-direct/windows/amd64/microk8s/ ]
+- urls: [ /installers/finder-direct/windows/amd64/ingress-setup/ ]
+- urls: [ /installers/finder-direct/windows/amd64/nssm/ ]
+- urls: [ /installers/finder-direct/windows/amd64/homebox-host-agent/ ]

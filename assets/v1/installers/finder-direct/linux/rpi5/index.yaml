@@ -1,0 +1,5 @@
+version: 1
+manifest: index
+
+rel:
+  - urls: [ /installers/finder-direct/linux/rpi5/k3s/ ]

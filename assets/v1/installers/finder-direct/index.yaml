@@ -2,12 +2,5 @@ version: 1
 manifest: index
 
 rel:
-  - urls: [ /installers/finder-direct/7zip/ ]
-  - urls: [ /installers/finder-direct/helm/ ]
-  - urls: [ /installers/finder-direct/istio/ ]
-  - urls: [ /installers/finder-direct/kubectl/ ]
-  - urls: [ /installers/finder-direct/minikube/ ]
-  - urls: [ /installers/finder-direct/microk8s/ ]
-  - urls: [ /installers/finder-direct/ingress-setup/ ]
-  - urls: [ /installers/finder-direct/nssm/ ]
-  - urls: [ /installers/finder-direct/homebox-host-agent/ ]
+  - urls: [ /installers/finder-direct/windows/ ]
+  - urls: [ /installers/finder-direct/linux/ ]

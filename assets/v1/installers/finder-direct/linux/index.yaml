@@ -1,0 +1,7 @@
+version: 1
+manifest: index
+
+rel:
+  - urls: [ /installers/finder-direct/linux/amd64/ ]
+  - urls: [ /installers/finder-direct/linux/arm64/ ]
+  - urls: [ /installers/finder-direct/linux/rpi5/ ]
