@@ -14,7 +14,7 @@ vendors:
             artifacts:
               - package:
                   type: os-executable
-                  primary: "https://finderdirect.org/download/host_agent/windows/homebox-host-agent-0.0.1.zip"
+                  primary: "https://www.finderdirect.org/download/host_agent/windows/homebox-host-agent-0.0.1.zip"
             commands:
               - command: |-
                   ${env:ProgramW6432}\7-Zip\7z.exe
