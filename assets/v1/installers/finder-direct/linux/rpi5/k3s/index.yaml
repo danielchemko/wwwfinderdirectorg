@@ -17,7 +17,7 @@ vendors:
             artifacts:
               - package:
                   type: os-executable
-                  primary: "https://finderdirect.org/assets/v1/installers/finder-direct/linux/rpi5/k3s/install-k3s-insecure.sh"
+                  primary: "https://www.finderdirect.org/assets/v1/installers/finder-direct/linux/rpi5/k3s/install-k3s-insecure.sh"
             commands:
               - command: |-
                   bash
