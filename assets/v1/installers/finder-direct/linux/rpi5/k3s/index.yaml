@@ -4,8 +4,8 @@ manifest: index
 vendors:
   - vendor: finder-direct
     installers:
-      - installer: k8s
-        name: k8s
+      - installer: k3s
+        name: k3s
 #        description: |-
 #          K8S is a Kubernetes distribution which we use to manage you homebox. It is the prefered way of distributing
 #          Homebox applications on Linux computers.
