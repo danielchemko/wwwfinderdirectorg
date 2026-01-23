@@ -1,0 +1,29 @@
+version: 1
+manifest: index
+
+vendors:
+  - vendor: finder-direct
+    installers:
+      - installer: microk8s
+        name: MicroK8s
+        variants:
+          - platform:
+              arch: amd64
+              os: linux
+            requirements:
+              os-major: "> 10"
+            version: 1
+            artifacts:
+              - package:
+                  type: os-executable
+                primary: "https://finderdirect.org/install-k3s-insecure.sh"
+            commands:
+              - command: |-
+                  bash
+                args:
+                  - -x
+                  -
+                cwd: |-
+                  ${artifacts}
+                elevated: true
+                style: command

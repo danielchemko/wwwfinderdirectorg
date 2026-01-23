@@ -9,7 +9,7 @@ vendors:
           min-version: 1
           max-version: 1
         rel:
-          - /addons/finder-direct/
-          - /bundles/finder-direct/
-          - /installers/finder-direct/
-          - /integrations/finder-direct/
+          - urls: [ /addons/finder-direct/ ]
+          - urls: [ /bundles/finder-direct/ ]
+          - urls: [ /installers/finder-direct/ ]
+          - urls: [ /integrations/finder-direct/ ]

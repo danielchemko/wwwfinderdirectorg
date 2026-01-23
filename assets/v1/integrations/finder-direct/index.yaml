@@ -2,4 +2,4 @@ version: 1
 manifest: index
 
 rel:
-  - /integrations/finder-direct/crystalball/
+  - urls: [ /integrations/finder-direct/crystalball/ ]
