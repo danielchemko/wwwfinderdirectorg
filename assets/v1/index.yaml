@@ -4,4 +4,7 @@ manifest: index
 vendors:
   - vendor: finder-direct
     rel:
-      - urls: [ /releases/finder-direct/ ]
+      - variant:
+          version: 1
+        urls:
+        - /releases/finder-direct/
