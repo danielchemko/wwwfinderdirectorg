@@ -4,25 +4,26 @@ manifest: index
 vendors:
   - vendor: finder-direct
     installers:
-      - installer: microk8s
-        name: MicroK8s
+      - installer: k8s
+        name: k8s
+        description: |-
+          K8S is a Kubernetes distribution which we use to manage you homebox. It is the prefered way of distributing
+          Homebox applications on Linux computers.
         variants:
           - platform:
               arch: amd64
               os: linux
-            requirements:
-              os-major: "> 10"
             version: 1
             artifacts:
               - package:
                   type: os-executable
-                primary: "https://finderdirect.org/install-k3s-insecure.sh"
+                  primary: "https://finderdirect.org/assets/v1/installers/finder-direct/linux/rpi5/k3s/install-k3s-insecure.sh"
             commands:
               - command: |-
                   bash
                 args:
                   - -x
-                  -
+                  - ${artifacts}/install-k3s-insecure.sh
                 cwd: |-
                   ${artifacts}
                 elevated: true
