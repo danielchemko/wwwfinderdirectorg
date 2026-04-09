@@ -21,6 +21,7 @@ vendors:
                   signature: |-
                     4323423nb4h23j4g23b4hj23g42h3j42g342h3j42g34hj234g23h4j23g42h3j4g2342h3j4g234hj234g23h4j23
       - addon: remote-install
+        signature: "gpg/finder-direct/dasdasbhjeqwe"
         tier: oss
         releases:
           - version: 1.0.0

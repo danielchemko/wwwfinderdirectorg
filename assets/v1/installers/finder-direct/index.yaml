@@ -4,3 +4,4 @@ manifest: index
 rel:
   - urls: [ /installers/finder-direct/windows/ ]
   - urls: [ /installers/finder-direct/linux/ ]
+  - urls: [ /installers/finder-direct/container/ ]

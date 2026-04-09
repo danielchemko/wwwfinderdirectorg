@@ -1,0 +1,29 @@
+version: 1
+manifest: index
+
+vendors:
+  - finder-direct:
+      volumeStereotypes:
+        - name: Confidential
+          access:
+            - group: homebox-admins
+          contentTypes:
+            - *
+        - name: Documents
+          access:
+            - group: homebox-users
+        - name: Downloads
+          access:
+            - group: homebox-users
+          contentTypes:
+            - *
+        - name: Music
+          access:
+            - group: homebox-users
+          contentTypes:
+            - application/music
+        - name: Videos
+          access:
+            - group: homebox-users
+          contentTypes:
+            - application/video

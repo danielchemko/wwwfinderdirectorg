@@ -1,0 +1,107 @@
+version: 1
+manifest: index
+
+vendors:
+  - finder-direct:
+      applications:
+        - name: postgresql
+          version: 18.1
+          fulfills:
+            - postgreSQL
+            - postgreSQL_18
+            - postgreSQL_18_0
+            - postgreSQL_18_1
+          image: postgres:18
+          packaging: homeserver
+          namespace: postgres
+          categories:
+            - databases
+            - application-support
+          interactive:
+            options:
+              - name: user-name
+                question: [ en: "Administrator Username" ]
+                description: [ en: "Create a user so that you can access your DB data" ]
+                type: String
+                default: auto
+                store: secret
+                format: |-
+                  ^(\w){1,25}$
+              - name: password
+                question: [ en: "Administrator Password" ]
+                type: String
+                default: auto
+                store: secret
+                format: |-
+                  ^(\w){1,25}$
+          env:
+            - POSTGRES_DB: ${options::user-name}
+            - POSTGRES_USER: ${options::user-name}
+            - POSTGRES_PASSWORD: ${options::password}
+          volumes:
+            - name: mysqlData
+              stereotype: appDataStatic
+              mountPath: /var/lib/postgresql
+              createIfEmpty: false
+              readOnly: false
+              size:
+                - standard: 1GB
+                - soho: 10GB
+                - enthusiast: 100GB
+          ports:
+            - port: 5432
+              protocol: TCP
+              access:
+                - network: subnet
+                  activation: optin
+                - network: namespace
+                  activation: auto
+                - network: cluster
+                  activation: auto
+                - network: internet
+                  activation: insecure
+          functions:
+            - name: list-schemas
+              access: [ role: backup, role: user ]
+              action: |-
+                # TODO create script to create new user
+            - name: add-su
+              access: [ role: backup ]
+              action: |-
+                # TODO create script to create new user
+            - name: add-schema
+              access: [ { type: application, customValues: false }, type: user ]
+              values:
+                schema: ${app::namespace}-${app::name}
+              action: |-
+                # TODO create script to create new user
+            - name: add-schema-user-admin
+              access: [ { type: application, customValues: false }, type: user ]
+              values:
+                schema: ${app::namespace}-${app::name}
+                userName: ${app::name}
+                password: ${app::new.password}
+              action: |-
+                # TODO create script to create new user
+            - name: add-schema-user
+              access: [ { type: application, customValues: false }, type: user ]
+              values:
+                schema: ${app::namespace}-${app::name}
+                userName: ${app::name}
+                password: ${app::new.password}
+              action: |-
+                # TODO create script to create new user
+            - name: install-extension
+              access: [ { type: application, customValues: ['extension'] }, role: admin ]
+              action: |-
+                values:
+                  schema: ${app::namespace}-${app::name}
+                  extension: null
+            - name: build-extension
+              access: [ role: admin ]
+              action: |-
+                values:
+                  extension: null
+                  repository: null
+                  # XXX think of how this can be instead a separate application for each extension / version?
+              
