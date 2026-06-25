@@ -1,0 +1,2615 @@
+openapi: 3.0.3
+
+info:
+  version: 1.0.0
+  title: Homebox Home Server API
+  contact:
+    name: Daniel Chemko
+    url: https://www.finderdirect.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: |-
+    This API allows communication between end user tools and Homeserver instances. The server is the Homeserver. This 
+    conduit enacts all command actions performed against the homeserver instance.
+tags:
+  - name: network
+    description: "Perform host network administration / monitoring"
+  - name: disk
+    description: "Make IO available from the container to / from host OS directories"
+  - name: useragent
+    description: "Bridge requests to/from a User Agent"
+servers:
+  - url: https://localhost/
+    variables:
+      tenant:
+        default: www
+        description: Your tenant id
+  - url: https://example.com/
+paths:
+  ###############################
+  ## USER API
+  ###############################
+  "/api/v1/user":
+    get:
+      tags:
+        - user
+      description: Fetch a list of Homeserver users
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - user
+      description: Create a new Homeserver user record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/user/{id}":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The User ID as a subject
+    get:
+      tags:
+        - user
+      description: Fetch a single Homeserver user record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - user
+      description: Update a Homeserver user record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - user
+      description: Delete a Homeserver user record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## DOMAIN API
+  ###############################
+  "/api/v1/domainzone":
+    get:
+      tags:
+        - domain
+      description: Fetch domain list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - domain
+      description: Add a new Homeserver domain record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxDomainZone'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/domainzone/{id}":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The User ID as a subject
+    get:
+      tags:
+        - domain
+      description: Fetch a single Homeserver domain record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - domain
+      description: Update a Homeserver domain record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxDomainZone'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - domain
+      description: Delete a Homeserver domain record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/domainzone/{zone_id}/name":
+    parameters:
+      - in: path
+        name: zone_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The Zone ID
+    get:
+      tags:
+        - domain
+      description: Fetch domain name list for the zone
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - domain
+      description: Add a new Homeserver domain name record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxDomainName'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/domainzone/{zone_id}/name/{domain_name_id}":
+    parameters:
+      - in: path
+        name: zone_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The Zone ID
+      - in: path
+        name: domain_name_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The Domain Name ID
+    get:
+      tags:
+        - domain
+      description: Fetch a single Homeserver domain name record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - domain
+      description: Update a Homeserver domain name record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxDomainName'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - domain
+      description: Delete a Homeserver domain name record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## CREDENTIAL API
+  ###############################
+  "/api/v1/credential":
+    get:
+      tags:
+        - credential
+      description: Fetch credential list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - credential
+      description: Add a new Homeserver credential record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxCredential'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/credential/{id}":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The credential ID as a subject
+    get:
+      tags:
+        - credential
+      description: Fetch a single Homeserver credential record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - credential
+      description: Update a Homeserver credential record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxCredential'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - credential
+      description: Delete a Homeserver credential record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/credential/{id}/binding":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The credential ID as a subject
+    get:
+      tags:
+        - credential
+      description: Fetch credential binding list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - credential
+      description: Add a new Homeserver credential binding record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxCredentialBinding'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/credential/{credentialId}/binding/{id}":
+    parameters:
+      - in: path
+        name: credentialId
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The credential ID as a subject
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The credential binding ID as a subject
+    get:
+      tags:
+        - credential
+      description: Fetch a single Homeserver credential binding record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - credential
+      description: Update a Homeserver credential binding record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxCredentialBinding'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - credential
+      description: Delete a Homeserver credential binding record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Storage Setup API
+  ###############################
+  "/api/v1/storage/root":
+    get:
+      tags:
+        - storage
+      description: Fetch volume list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - storage
+      description: Add a new Homeserver volume record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStorageRoot'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/storage/root/{id}":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage root ID as a subject
+    get:
+      tags:
+        - storage
+      description: Fetch a single Homeserver storage root record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - storage
+      description: Update a Homeserver storage root record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStorageRoot'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - storage
+      description: Delete a Homeserver storage root record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/storage/root/{id}/path":
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage root ID as a subject
+    get:
+      tags:
+        - storage
+      description: Fetch storage path list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - storage
+      description: Add a new Homeserver storage path record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStoragePath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/storage/root/{root}/path/{id}":
+    parameters:
+      - in: path
+        name: root
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage root ID as a subject
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage path ID as a subject
+    get:
+      tags:
+        - storage
+      description: Fetch a single Homeserver storage path record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - storage
+      description: Update a Homeserver storage path record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStoragePath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - storage
+      description: Delete a Homeserver storage path record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/storage/root/{root}/path/{id}/app":
+    parameters:
+      - in: path
+        name: root
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage root ID as a subject
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage path ID as a subject
+    get:
+      tags:
+        - storage
+      description: Fetch app attached storage path list
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - storage
+      description: Add a new Homeserver app attached storage path record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStoragePathApp'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/storage/root/{root}/path/{path}/app/{id}":
+    parameters:
+      - in: path
+        name: root
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage root ID as a subject
+      - in: path
+        name: path
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The storage path ID as a subject
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The app attached storage path ID as a subject
+    get:
+      tags:
+        - storage
+      description: Fetch a single Homeserver app attached storage path record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - storage
+      description: Update a Homeserver app attached storage path record
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxStoragePathApp'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - storage
+      description: Delete a Homeserver app attached storage path record
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+
+  ###############################
+  ## Application API
+  ###############################
+  "/api/v1/application":
+    get:
+      tags:
+        - application
+      description: Fetch a list of all installed Homeserver applications
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - application
+      description: Create a new Homebox application
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxApp'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/application/{app_id}":
+    parameters:
+      - in: path
+        name: app_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The application ID to focus on
+    patch:
+      tags:
+        - application
+      description: Update a Homeserver application
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxApp'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - application
+      description: Delete a Homeserver application
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/application/{app_id}/instance":
+    parameters:
+      - in: path
+        name: app_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The application ID to focus on
+    get:
+      tags:
+        - application
+      description: Fetch a list of all Homeserver application bound networks
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - application
+      description: Create a new Homebox application instance
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxAppInstance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/application/{app_id}/instance/{application_instance_id}":
+    parameters:
+      - in: path
+        name: app_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The application ID to focus on
+      - in: path
+        name: application_instance_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The application instance ID to focus on
+    patch:
+      tags:
+        - application
+      description: Update a Homeserver application instance
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxAppInstance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - application
+      description: Delete a Homeserver application instance
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Network API
+  ###############################
+  "/api/v1/network":
+    get:
+      tags:
+        - network
+      description: Fetch a list of all Homeserver networks
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - network
+      description: Create a new Homebox network
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetwork'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/network/{network_id}":
+    parameters:
+      - in: path
+        name: network_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+    patch:
+      tags:
+        - network
+      description: Update a Homeserver network
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetwork'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - network
+      description: Delete a Homeserver network
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Application Network API
+  ###############################
+  "/api/v1/network/{network_id}/application":
+    parameters:
+      - in: path
+        name: network_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+    get:
+      tags:
+        - appNetwork
+      description: Fetch a list of all Homeserver application bound networks
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - appNetwork
+      description: Create a new Homebox application bound network
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetworkAppInstance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/network/{network_id}/application/{application_instance_id}":
+    parameters:
+      - in: path
+        name: network_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+      - in: path
+        name: application_instance_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The application instance ID to focus on
+    patch:
+      tags:
+        - appNetwork
+      description: Update a Homeserver application network
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetworkAppInstance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    delete:
+      tags:
+        - appNetwork
+      description: Delete a Homeserver application network
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Network Proxy API
+  ###############################
+  "/api/v1/network/{network_id}/proxy":
+    parameters:
+      - in: path
+        name: network_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+    get:
+      tags:
+        - proxyNetwork
+      description: Fetch a list of all Homeserver network proxies in the target network
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - proxyNetwork
+      description: Create a new Homebox network proxy target
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetworkProxyListener'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxNetworkProxyListenerResponse'
+  "/api/v1/network/{network_id}/proxy/{network_proxy_id}":
+    parameters:
+      - in: path
+        name: network_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+      - in: path
+        name: network_proxy_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The proxy ID to focus on
+    patch:
+      tags:
+        - proxyNetwork
+      description: Update a Homeserver network proxy target
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxNetworkProxyListener'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxNetworkProxyListenerResponse'
+    delete:
+      tags:
+        - proxyNetwork
+      description: Delete a Homeserver network proxy target
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Job API
+  ###############################
+  "/api/v1/job":
+    get:
+      tags:
+        - job
+      description: List Running Jobs
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/HomeboxJob'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - job
+      description: Create a new job
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxJobResponse'
+  "/api/v1/job/{job_id}":
+    parameters:
+      - in: path
+        name: job_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The network ID to focus on
+    get:
+      tags:
+        - job
+      description: Show the details of the job
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxJobResponse'
+    patch:
+      tags:
+        - job
+      description: Update the job
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/HomeboxJob'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxJobResponse'
+    delete:
+      tags:
+        - job
+      description: Stop and delete the specified job
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  ###############################
+  ## Task API
+  ###############################
+  "/api/v1/task":
+    get:
+      tags:
+        - task
+      description: List tasks that are registered in the system
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/HomeboxTask'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    post:
+      tags:
+        - task
+      description: Create a new task
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxTask'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxTaskResponse'
+  "/api/v1/task/{task_id}":
+    parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The task identifier
+    get:
+      tags:
+        - task
+      description: Show the details of the job
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxTaskResponse'
+    patch:
+      tags:
+        - task
+      description: Update the job
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxTask'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxTaskResponse'
+    delete:
+      tags:
+        - task
+      description: Delete the specified task, or disable it for non-system uses if its a system created task
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/task/{task_id}/job":
+    parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The task identifier
+    get:
+      tags:
+        - task
+      description: List the jobs running for the specified task
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxJobResponse'
+  #####
+  # TODO may be deprecated
+  #####
+  "/api/v1/host/network/dhcpv4":
+    get:
+      tags:
+        - hostNetwork
+      description: Fetch the list of all DHCPv4 information on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DhcpV4'
+  "/api/v1/host/network/dhcpv6":
+    get:
+      tags:
+        - hostNetwork
+      description: Fetch the list of all DHCPv6 information on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DhcpV6'
+  "/api/v1/host/network/interfaces":
+    get:
+      tags:
+        - hostNetwork
+      description: Fetch the list of host interfaces on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NetInterface'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Ipv4Host:
+      type: object
+      required:
+        - ip
+      properties:
+        ip:
+          type: string
+    Ipv4HostAndMask:
+      type: object
+      required:
+        - ip
+        - mask
+      properties:
+        ip:
+          type: string
+        mask:
+          type: string
+    Ipv4HostPort:
+      type: object
+      required:
+        - ip
+        - port
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+          format: int32
+    HomeboxError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        subCode:
+          type: integer
+          format: int32
+        service:
+          type: string
+        message:
+          type: string
+        trace:
+          type: string
+    HomeboxResponse:
+      type: object
+      required:
+        - requestId
+      properties:
+        data:
+          type: object
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeboxResponses:
+      type: object
+      required:
+        - requestId
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeboxId:
+      type: integer
+      format: int32
+    HomeboxObject:
+      type: object
+    HomeboxUser:
+      type: object
+      required:
+        - email
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        realmType:
+          $ref: '#/components/schemas/CredentialRealmType'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxAppIntegrationType:
+      type: string
+      enum:
+        # Injected credentials/schema; isolated DB / app instance
+        - POSTGRES
+        # Injected credentials/schema; isolated DB / app instance
+        - MYSQL
+        # Injected credentials; proxy isolated databases
+        - REDIS
+        # Injected credentials; proxy isolated databases
+        - MEMCACHED
+    # TODO may transform into encoded or type: object?
+    HomeboxAppSysctlType:
+      type: string
+      enum:
+        - LINUX_SRC_VALID_MARK
+    HomeboxAppSystemSpec:
+      type: object
+      properties:
+        sysctl:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppSysctlType'
+    HomeboxAppHardwareSpec:
+      type: object
+      properties:
+        arch:
+          type: string
+          enum:
+            - AARCH64
+            - AMD64
+        machine:
+          type: string
+          enum:
+            - RPI5
+        os:
+          type: string
+          enum:
+            - LINUX
+            - WINDOWS
+        os_variant:
+          type: string
+    HomeboxAppNetworkProtocolType:
+      type: string
+      enum:
+        - HTTP
+        - HTTPS
+        - REDIS
+        - MEMCACHED
+        - POSTGRES
+        - MYSQL
+        - GENERIC_TCP
+        - GENERIC_UDP
+    HomeboxAppNetworkPort:
+      type: object
+      properties:
+        port_number:
+          type: integer
+          format: int32
+        protocol:
+          $ref: '#/components/schemas/HomeboxAppNetworkProtocolType'
+        supported_network_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppNetworkType'
+        hostname_suggestions:
+          type: array
+          items:
+            type: string
+    HomeboxAppNetworkSpec:
+      type: object
+      properties:
+        ports:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppNetworkPort'
+    HomeboxAppStorageSize:
+      type: string
+      description: |-
+        Just a general gut check assumption on how large this directory can get to based on typical user behaviour. This
+        is really just a guideline, so there is no imperative to be accurate at this point.
+      enum:
+        - KBS
+        - MBS
+        - GBS
+        - TBS
+    HomeboxAppStorageSpec:
+      type: object
+      required:
+        - mandatory
+        - user_override
+        - symbolic_name
+        - multi
+        - size_approximation
+        - system_auto
+        - read_only
+      description: |-
+        WIP interpretation of a generic storage volume declaration from the application. This is still a little rough,
+        and will likely need to evolve before its viable to build storage persistent volumes and valid external system
+        locations.
+      properties:
+        mandatory:
+          type: boolean
+          description: |-
+            Is this storage spec mandatory for the image to be deployed. It is typical to be true, but it can be set to
+            optional (false) if the volume is aspirational, or doesn't impede critical functionality if absent. Be
+            careful to avoid writing data to non-bound file-system locations, as this can significantly impact the
+            performance and long term stability of the program.
+        user_override:
+          type: boolean
+          description: |-
+            Can the user override the system selected location suggested in this spec. System / cache / config
+            directories should false unless the directory reference is being attached to original user content
+        symbolic_name:
+          type: string
+          description: |-
+            The name of the volume mount within the scope of the app (eg. cachedir, datadir, pictures, downloads)
+        multi:
+          type: boolean
+          description: |-
+            This storage spec can be applied to multiple volumes when user_override=true. This allows for such use cases
+            as having a customizable number of attached storage
+        size_approximation:
+          $ref: '#/components/schemas/HomeboxAppStorageSize'
+        system_auto:
+          type: boolean
+          description: Will the system
+        mapper:
+          type: string
+          description: |-
+            Mapping function between the location of the persistent volume and the local file-system location within the
+            container. The volume mount for most problems will be absolute, since the programs will only function with
+            specific files and directories serving specific purposes
+        global_file_system_hints:
+          type: array
+          items:
+            type: string
+          description: |-
+            Gives a suggested location in the Homebox global file-system scheme where it should be installed. This can
+            be overwritten or completely ignored if inappropriate.
+        volume_binder:
+          type: boolean
+          description: |-
+            Create as a volume binding
+        read_only:
+          type: boolean
+          description: |-
+            The mount should be added as strictly read-only disabling all mutation
+        binder_hints:
+          type: array
+          items:
+            type: string
+          description: |-
+            Hints on how to approach volume binding
+    HomeboxFunctionScriptType:
+      type: string
+      enum:
+        - UNKNOWN
+        - BASH
+        - JAVASCRIPT
+    HomeboxFunctionType:
+      type: string
+      enum:
+        # Free-form object MAP with bound string properties (String,*)
+        - OBJECT
+        # Free-form MAP(*,*)
+        - MAP
+        # List of strings
+        - LIST_STR
+        # List of any data
+        - LIST
+        # String
+        - STRING
+        # 32-bit signed integer
+        - INT32
+        # 64-bit signed integer
+        - INT64
+        # 32-bit IEEE floating point number
+        - FLOAT32
+        # 64-bit IEEE floating point number
+        - FLOAT64
+        # boolean type
+        - BOOLEAN
+    HomeboxFunctionParam:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/HomeboxFunctionType'
+        mandatory:
+          type: boolean
+        user_override:
+          type: boolean
+        masked:
+          type: boolean
+        binding_hints:
+          type: array
+          items:
+            type: string
+    HomeboxFunction:
+      type: object
+      properties:
+        repository_id:
+          $ref: '#/components/schemas/HomeboxId'
+        release:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        alt:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxFunctionParam'
+        image:
+          type: string
+        label:
+          type: string
+        script_type:
+          $ref: '#/components/schemas/HomeboxFunctionScriptType'
+        script:
+          type: string
+    HomeboxAppRelIntegration:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_rel_id:
+          $ref: '#/components/schemas/HomeboxId'
+        function_id:
+          $ref: '#/components/schemas/HomeboxId'
+        mandatory:
+          type: boolean
+        user_override:
+          type: boolean
+        # KV map <String, *>
+        args:
+          type: object
+    HomeboxAppRel:
+      description: A reference to a declared App
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        repository_id:
+          $ref: '#/components/schemas/HomeboxId'
+        release:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        alt:
+          type: string
+    HomeboxAppRelInstance:
+      description: Join an app dependency declaration to its instance in the Homebox
+      type: object
+      properties:
+        app_rel_id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_instance_id:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxAppSecuritySpec:
+      type: object
+      required:
+        - security_category
+      properties:
+        security_category:
+          $ref: '#/components/schemas/HomeboxAppSecurityCategory'
+        signatures:
+          type: array
+          items:
+            type: string
+        repository_signature:
+          type: string
+    HomeboxAppSecurityCategory:
+      type: string
+      enum:
+        # User App, no permissions; No shared files; No Network access
+        - APP_PURE
+        # User App, shared files with blue; shared network with blue
+        - APP_SHARED_DISK
+        # Monitoring App, system green-light monitoring exceptions only
+        - APP_MONITORING_RESTRICTED
+        # User App, shared files with red; full local network access
+        - APP_SHARED_DISK_NETWORK_LIMITED
+        # System App, API from all? -- Can attach to any app disk; can access unlimited network resources, restricted kubernetes API
+        - SYS_PURPLE
+        # System App, unlimited system / network access, access kubernetes API
+        - SYS_BLACK
+    HomeboxAppSpec:
+      type: object
+      required:
+        - name
+        - label
+        - security_category
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        label:
+          type: string
+        repository_id:
+          $ref: '#/components/schemas/HomeboxId'
+        repository_labels:
+          type: array
+          items:
+            type: string
+        repository_sideload:
+          type: boolean
+        release:
+          type: string
+        security_category:
+          $ref: '#/components/schemas/HomeboxAppSecurityCategory'
+        security:
+          $ref: '#/components/schemas/HomeboxAppSecuritySpec'
+        security_bypass:
+          type: boolean
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppNetworkSpec'
+        storage_locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppStorageSpec'
+        hardware_requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppHardwareSpec'
+        system_requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppSysctlType'
+        dependencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppRel'
+    HomeboxAppRepository:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        security_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppSecurityCategory'
+    HomeboxApp:
+      type: object
+      required:
+        - name
+        - version
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        namespace_per_instance:
+          type: boolean
+        security_zone:
+          type: string # TODO enum
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxAppInstance:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_id:
+          $ref: '#/components/schemas/HomeboxId'
+        namespace:
+          type: string
+        enabled:
+          type: boolean # some state process beyond simply start/stop?
+        status:
+          type: string # only polled from system state, not persisted
+        dependency_instances:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxAppRelInstance'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxDomainZoneScope:
+      type: string
+      enum:
+        - EXTERNAL
+        - INTERNAL
+        - BOTH
+    HomeboxDomainZone:
+      type: object
+      required:
+        - name
+        - provider
+        - scope
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        provider:
+          type: string
+        scope:
+          $ref: '#/components/schemas/HomeboxDomainZoneScope'
+        subdomain_wildcards_allowed:
+          type: boolean
+        bound_address:
+          type: string
+        owned:
+          type: boolean
+        ownership_verified:
+          type: boolean
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxDomainName:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        zone_id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxAppNetworkType:
+      type: string
+      enum:
+        - INTERNET
+        - SUBNET
+        - VLAN
+        - VPN
+    HomeboxNetwork:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        type:
+          $ref: '#/components/schemas/HomeboxAppNetworkType'
+        network_interface:
+          type: string
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    NetworkSecurityType:
+      type: string
+      enum:
+        - NOT_ENCRYPTED
+        - ENCRYPTED_AT_SOURCE
+        - ENCRYPTED_AT_GATEWAY
+    HomeboxApplicationSecurityDomain:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        user_ref:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        group_ref:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        realm:
+          type: string
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxNetworkAppInstance:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_instance_id:
+          $ref: '#/components/schemas/HomeboxId'
+        network_id:
+          $ref: '#/components/schemas/HomeboxId'
+        domain_name_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        application_security_domain_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        security_permits:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkSecurityType'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxNetworkProxyForwardStrategy:
+      type: string
+      enum:
+        # Send the TCP request as-is (no adjustments) losing the original request IP (http/https supported)
+        - TCP_FORWARD
+        # Receive the request as HTTP and forward it to the destination HTTP (http only)
+        - HTTP_FORWARD
+        # Receive the request as HTTPs and forward it to the destination HTTPs (https only)
+        - TLS_FORWARD
+        # Generate a TLS endpoint and forward HTTP using X-forwarded-for (HTTP/https supported)
+        - TLS_TERMINATE
+    HomeboxNetworkProxyListenerResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxNetworkProxyListener'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeboxNetworkProxyListener:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        network_id:
+          $ref: '#/components/schemas/HomeboxId'
+        ip_protocol:
+          $ref: '#/components/schemas/HomeboxRoutingProtocolType'
+        target_domain_name_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        forward_strategy:
+          $ref: '#/components/schemas/HomeboxNetworkProxyForwardStrategy'
+        forward_ip:
+          type: string
+        forward_port:
+          type: integer
+          format: int32
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxDomainBindingRuleAction:
+      type: string
+      enum:
+        - BLOCK
+        - ROUTE_DIRECT
+        - ROUTE_CLOUDFLARE
+    HomeboxRoutingProtocolType:
+      type: string
+      enum:
+        - HTTP
+        - HTTPS
+        - TCP
+        - UDP
+    HomeboxDomainZoneBindingRule:
+      type: object
+      required:
+        - domain
+        - protocol
+        - action
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        domain_zone_id:
+          $ref: '#/components/schemas/HomeboxId'
+        protocol:
+          $ref: '#/components/schemas/HomeboxRoutingProtocolType'
+        action:
+          $ref: '#/components/schemas/HomeboxDomainBindingRuleAction'
+        # Used to render the binding
+        description:
+          type: string
+        status:
+          type: string
+        external_ipv4:
+          $ref: '#/components/schemas/Ipv4Host'
+        external_port:
+          type: integer
+          format: int32
+        internal_ipv4:
+          $ref: '#/components/schemas/Ipv4Host'
+        internal_port:
+          type: integer
+          format: int32
+    HomeboxCredential:
+      type: object
+      required:
+        - principal
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        description:
+          type: string
+        principal:
+          type: string
+        secret:
+          type: string
+        salt:
+          type: string
+        security_type:
+          type: string
+        domain:
+          type: string
+        protected:
+          type: boolean
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxCredentialBinding:
+      type: object
+      required:
+        - credential
+        - service
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        credential_id:
+          $ref: '#/components/schemas/HomeboxId'
+        service:
+          $ref: '#/components/schemas/Ipv4HostPort'
+    HomeboxGroup:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxId'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    # A root file system's root. At the beginning, we're only exposing file-systems to containers, not block devices, so
+    # each much provide file-system based provisioning. This may be extended in the future to support block devices, but
+    # this may go over most use cases home/SOHO's likely need. This list will grow and is NOT expected to retain ordinal
+    # ordering as we add new supported storage locations.
+    HomeboxStorageLocationType:
+      type: string
+      enum:
+        # Local File Systems
+        - DIRECT
+        # Network File Systems
+        - NFS
+        - CIFS
+        - ISCSI
+        # Cluster File Systems
+        - CEPH
+        - HDFS
+        # VENDOR
+        - SYNOLOGY
+        - QNAP
+    # TODO Lots to add / unpack here around what applications can be attached to which storage roots in order to paint
+    #  security policies properly
+    HomeboxStorageRoot:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        description:
+          type: string
+        credential_id:
+          $ref: '#/components/schemas/HomeboxId'
+        type:
+          $ref: '#/components/schemas/HomeboxStorageLocationType'
+        locator:
+          type: string
+        protected:
+          type: boolean
+        storage_capacity_bytes:
+          type: integer
+          format: int64
+        storage_used_bytes:
+          type: integer
+          format: int64
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxStoragePath:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        root:
+          $ref: '#/components/schemas/HomeboxStorageRoot'
+        name:
+          type: string
+        description:
+          type: string
+        path:
+          type: string
+        protected:
+          type: boolean
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxStoragePathApp:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        root:
+          $ref: '#/components/schemas/HomeboxId'
+        app:
+          $ref: '#/components/schemas/HomeboxId'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    CredentialRealmType:
+      type: string
+      enum:
+        - HOMESERVER
+        - MANAGED_OIDC
+        - SAML
+        - OPENIDCONNECT
+    RootNameProvider:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        url:
+          type: string
+        credential_id:
+          $ref: '#/components/schemas/HomeboxId'
+    NetInterface:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        virtual:
+          type: boolean
+        tunnel:
+          type: boolean
+        dhcp_configured:
+          type: boolean
+        ipv4_gateway:
+          $ref: '#/components/schemas/Ipv4Host'
+        ipv4_addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4HostAndMask'
+        physical_addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetMacAddress'
+        dhcpv4:
+          $ref: '#/components/schemas/DhcpV4'
+        dhcpv6:
+          $ref: '#/components/schemas/DhcpV6'
+    DhcpV4:
+      type: object
+      properties:
+        machine_id:
+          $ref: '#/components/schemas/NetMacAddress'
+        options:
+          $ref: '#/components/schemas/DhcpOptions'
+    DhcpV6:
+      type: object
+      properties:
+        machine_id:
+          $ref: '#/components/schemas/NetMacAddress'
+        options:
+          $ref: '#/components/schemas/DhcpOptions'
+    NetMacAddress:
+      type: object
+      properties:
+        mac_address:
+          type: string
+        synthetic:
+          type: boolean
+    DhcpOptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/DhcpOption'
+    DhcpOption:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          $ref: '#/components/schemas/DhcpOptionType'
+        bytes:
+          type: string
+          format: byte
+        vendored:
+          type: boolean
+        vendor:
+          type: string
+        addresses:
+          type: array
+          items:
+            type: string
+    DhcpOptionType:
+      type: string
+      enum:
+        - UNKNOWN
+        - PAD
+        - SUBNET_MASK
+        - TIME_OFFSET
+        - ROUTER
+        - UNIX_TIME_SERVER
+        - WINS_SERVERS
+        - DNS_SERVERS
+        - SYSLOG_SERVERS
+        - QUOTE_SERVERS
+        - LPR_SERVERS
+        - IMPRESS_SERVERS
+        - RLP_SERVERS
+        - HOSTNAME
+        - BOOT_FILE
+        - MERIT_DUMP_FILE
+        - DOMAIN_NAME
+        - SWAP_SERVERS
+        - ROOT_PATH
+        - EXTENSION_FILE
+        - FORWARD
+        - SOURCE_ROUTING_ENABLED
+        - ROUTER_AUTO_DISCOVERY
+        - ROUTER_SOLICITATION_ADDRESS
+        - STATIC_ROUTES
+        - VENDOR_SPECIFIC
+        - NETBIOS_NAME_SERVERS
+        - NETBIOS_DISTRIBUTION_SERVERS
+        - NETBIOS_NODE_TYPE
+        - NETBIOS_SCOPE
+        - DHCP_LEASE
+        - DHCP_MESSAGE_TYPE
+        - DHCP_SERVER_IP
+        - DOMAIN_SEARCH_PROVIDERS
+        - CLASSLESS_STATIC_ROUTE
+        - WEB_PROXY_AUTO_DISCOVERY
+    HomeboxTask:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        # TODO come back and finish this -- task should invoke jobs
+        todo:
+          type: string
+    HomeboxTaskResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxTask'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeboxJobTarget:
+      type: string
+      # TODO maybe we tie a bunch of this into tasks instead and just make jobs the running value of tasks, in which case we don't need to separate spec from instance.. in which case we also don't need to
+      enum:
+        # call a task
+        - APP_TASK
+        # call a function assigned to an app
+        - APP_FUNCTION
+        # call a function assigned to an app instance
+        - APP_INSTANCE_FUNCTION
+        # install an app instance
+        - APP_INSTALL
+        # remove an app instance
+        - APP_UNINSTALL
+        # call a system task
+        - SYS_TASK
+        # call a function assigned to a system app or instance
+        - SYS_FUNCTION
+        # pre-calculated facts collection evolution
+        - SYS_SOLVER
+        # core system app installation
+        - SYS_INSTALL
+        # core system app upgrade
+        - SYS_UPGRADE
+        # core system app removal
+        - SYS_UNINSTALL
+    HomeboxJobSpec:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        name:
+          type: string
+        description:
+          type: string
+        target:
+          $ref: '#/components/schemas/HomeboxJobTarget'
+        task_id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_id:
+          $ref: '#/components/schemas/HomeboxId'
+        app_instance_id:
+          $ref: '#/components/schemas/HomeboxId'
+        user_id:
+          $ref: '#/components/schemas/HomeboxId'
+        function_id:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxJob:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        HomeboxJobSpecId:
+          $ref: '#/components/schemas/HomeboxId'
+        # TODO need to include a set of instance variables to hold the instance running as it was when it was started. We should seal variables from mutation on job creation, but still reference what the symbolic values were defined as if theyt were system derived
+        # TODO need to include a status so that jobs are pollable both in general and specifically, aka JobStatus replacement
+        todo:
+          type: string
+    HomeboxJobResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxJob'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string

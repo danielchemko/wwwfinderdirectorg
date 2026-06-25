@@ -1,0 +1,607 @@
+openapi: 3.0.3
+
+info:
+  version: 1.0.0
+  title: Homebox Crystalball Server API
+  contact:
+    name: Daniel Chemko
+    url: https://www.finderdirect.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: |-
+    This API allows communication between Homeserver instances and Crystalball
+tags:
+  - name: locator
+    description: "Explore locations for other API endpoints"
+  - name: beacon
+    description: "Dynamic IP address location for subnet broadcasting Homebox instances"
+  - name: ddns
+    description: "Work with Dynamic DNS assignments"
+  - name: token
+    description: "Generate a new token for the specified user"
+  - name: certAcme
+    description: "Work with assigning certificates for managed domains when IP's are on private networks"
+  - name: org
+    description: "Organization Management features"
+servers:
+  - url: https://crystalball.finderdirect.org/
+  - url: https://localhost/
+security:
+  - bearerAuth: []
+  - basicAuth: []
+paths:
+  ###############################
+  ## Locator API
+  ###############################
+  "/api/v1/locator":
+    get:
+      tags:
+        - locator
+      description: Fetch a directory of services provided Crystalball
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballLocatorResponse'
+  ###############################
+  ## BEACON API
+  ###############################
+  "/api/v1/beacon":
+    get:
+      tags:
+        - beacon
+      description: Fetch a beacon left behind from the request IP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballBeaconResponse'
+    post:
+      tags:
+        - beacon
+      description: Create a beacon for this request's IP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballBeacon'
+      responses:
+        '200':
+          description: OK
+  "/api/v1/beacon/{ip_address}":
+    parameters:
+      - in: path
+        name: ip_address
+        schema:
+          type: string
+        required: true
+        description: The public IP address of the beacons in focus
+    get:
+      tags:
+        - beacon
+      description: Fetch a beacon left behind from the IP specified (only for authorized participants)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballBeaconResponse'
+  ###############################
+  ## DDNS API
+  ###############################
+  "/api/v1/ddns":
+    get:
+      tags:
+        - ddns
+      description: Fetch a ddns for the request IP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballDdnsResponse'
+    post:
+      tags:
+        - ddns
+      description: Register a new DDNS for the request IP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballDdnsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballDdnsResponse'
+  "/api/v1/ddns/private":
+    get:
+      tags:
+        - ddns
+      description: Fetch any assigned private network DDNS records for the request IP
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballDdnsPrivateResponse'
+    post:
+      tags:
+        - ddns
+      description: Register a new private network DDNS record for the request IP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballDdnsPrivateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballDdnsPrivateResponse'
+  ###############################
+  ## Bounce API
+  ###############################
+  "/api/v1/ddns/bounce":
+    post:
+      tags:
+        - ddns
+      description: Perform a bounce test using the calling IP host and the port provided in the request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballDdnsBounceRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballDdnsBounceResponse'
+  ###############################
+  ## Token API
+  ###############################
+  "/api/v1/token":
+    post:
+      tags:
+        - token
+      description: Fetch a new session token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballTokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballTokenResponse'
+  ###############################
+  ## CERT API
+  ###############################
+  "/api/v1/cert/acme":
+    post:
+      tags:
+        - certAcme
+      description: Request an ACME registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballAcmeRegisterResponse'
+  "/update":
+    post:
+      tags:
+        - certAcme
+      description: Request an ACME registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrystalballAcmeUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballAcmeUpdateResponse'
+  ###############################
+  ## ORG API
+  ###############################
+  "/api/v1/org":
+    get:
+      tags:
+        - org
+      description: Fetch a list of all organizations (Restricted)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballOrgListResponse'
+  "/api/v1/org/{org_id}":
+    parameters:
+      - in: path
+        name: org_id
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The organization in focus
+    get:
+      tags:
+        - org
+      description: Fetch a single organization's details (Restricted)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballOrgFetchResponse'
+    patch:
+      tags:
+        - org
+      description: Fetch a single organization's details (Restricted)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeboxOrganization'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrystalballOrgFetchResponse'
+    delete:
+      tags:
+        - org
+      description: Delete the org and all structure under it
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    HomeboxError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        subCode:
+          type: integer
+          format: int32
+        service:
+          type: string
+        message:
+          type: string
+        trace:
+          type: string
+    HomeboxId:
+      type: integer
+      format: int32
+    HomeboxUser:
+      type: object
+      required:
+        - email
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        realmType:
+          $ref: '#/components/schemas/CredentialRealmType'
+        last_updated_at:
+          type: string
+          format: date-time
+        last_updated_by:
+          $ref: '#/components/schemas/HomeboxId'
+        deleted_at:
+          type: string
+          format: date-time
+        deleted_by:
+          $ref: '#/components/schemas/HomeboxId'
+    HomeboxRole:
+      type: string
+      enum:
+        - SUPERADMIN
+        - ADMIN
+        - MEMBER
+        - HELPER
+        - OBSERVER
+    HomeboxOrganization:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        organization_name:
+          type: string
+    HomeboxOrganizationUserRole:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/HomeboxId'
+        org_id:
+          $ref: '#/components/schemas/HomeboxId'
+        user_id:
+          $ref: '#/components/schemas/HomeboxId'
+        role:
+          $ref: '#/components/schemas/HomeboxRole'
+    CredentialRealmType:
+      type: string
+      enum:
+        - HOMESERVER
+        - MANAGED_OIDC
+        - SAML
+        - OPENIDCONNECT
+    CrystalballLocatorResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CrystalballLocator'
+    CrystalballLocator:
+      type: object
+      properties:
+        beacon:
+          $ref: '#/components/schemas/CrystalballLocatorItem'
+        ddns:
+          $ref: '#/components/schemas/CrystalballLocatorItem'
+        token:
+          $ref: '#/components/schemas/CrystalballLocatorItem'
+    CrystalballLocatorItem:
+      type: object
+      properties:
+        url:
+          type: string
+        version:
+          type: string
+    CrystalballBeaconResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballBeacon'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballBeacon:
+      type: object
+      required:
+        - ip
+        - port
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+          format: int32
+        name:
+          type: string
+        status:
+          type: string
+    CrystalballDdnsRequest:
+      type: object
+      properties:
+        ip:
+          type: string
+        domain_zone:
+          type: string
+    CrystalballDdnsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballDdnsRegistration'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballDdnsRegistration:
+      type: object
+      properties:
+        ip:
+          type: string
+        domain_zone:
+          type: string
+    CrystalballDdnsPrivateRequest:
+      type: object
+      required:
+        - ip
+      properties:
+        ip:
+          type: string
+        domain_zone:
+          type: string
+    CrystalballDdnsPrivateResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballDdnsRegistration'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballDdnsBounceRequest:
+      type: object
+      required:
+        - ports
+      properties:
+        ip:
+          type: string
+        ports:
+          type: array
+          items:
+            type: integer
+            format: int32
+    CrystalballDdnsBounceResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballDdnsBouncePortStatus'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballDdnsBouncePortStatus:
+      type: object
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+          format: int32
+        open:
+          type: boolean
+    CrystalballTokenScope:
+      type: object
+      properties:
+        name:
+          type: string
+    CrystalballTokenRequest:
+      type: object
+      properties:
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballTokenScope'
+    CrystalballTokenResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CrystalballToken'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballScope:
+      type: string
+      enum:
+        - DDNS
+        - BEACONS
+        - CERT
+    CrystalballToken:
+      type: object
+      properties:
+        user_id:
+          $ref: '#/components/schemas/HomeboxId'
+        token:
+          type: string
+        # Epoch Seconds
+        expires_at:
+          type: integer
+          format: int64
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrystalballScope'
+    CrystalballAcmeRegisterResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        fulldomain:
+          type: string
+        subdomain:
+          type: string
+        server_url:
+          type: string
+        allowfrom:
+          type: array
+          items:
+            type: string
+    CrystalballAcmeUpdateRequest:
+      type: object
+      properties:
+        subdomain:
+          type: string
+        txt:
+          type: string
+    CrystalballAcmeUpdateResponse:
+      type: object
+      properties:
+        txt:
+          type: string
+    # TODO needs pagination
+    CrystalballOrgListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomeboxOrganization'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballOrgFetchResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/HomeboxOrganization'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    # TODO needs pagination
+    CrystalballOrgUserFetchResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/HomeboxOrganizationUserRole'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    CrystalballOrgUsersFetchResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/HomeboxUser'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    basicAuth:
+      type: http
+      scheme: basic

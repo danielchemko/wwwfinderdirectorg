@@ -1,0 +1,860 @@
+openapi: 3.0.3
+
+info:
+  version: 1.0.0
+  title: Homebox Host Agent API
+  contact:
+    name: Daniel Chemko
+    email: daniel chemko finderdirect org
+    url: https://www.finderdirect.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: |-
+    This API allows communication between Homeserver and installed Host Agent instances. The server is the Host Agent.
+    The communications bridge allows for Homeserver to make administrative actions on the host OS to help facilitate
+    Homebox operations.
+#externalDocs:
+#  description: ''
+#  url: ''
+tags:
+  - name: homeserver
+    description: "Actions to perform on the homeserver instance"
+  - name: network
+    description: "Perform host network administration / monitoring"
+  - name: firewall
+    description: "Firewall rules, forwarding, etc.. monitoring and control"
+  - name: disk
+    description: "Make IO available from the container to / from host OS directories"
+  - name: userAgent
+    description: "Bridge requests to/from a User Agent"
+  - name: info
+    description: "Information requests"
+servers:
+  - url: https://localhost/
+    variables:
+      tenant:
+        default: www
+        description: Your tenant id
+  - url: https://example.com/
+paths:
+  "/api/v1/ping":
+    get:
+      description: Test the connectivity of the request
+      tags:
+        - info
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+  "/api/v1/info":
+    get:
+      description: Test the connectivity of the request
+      tags:
+        - info
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostAgentInfo'
+  "/api/v1/homeserver/info":
+    get:
+      tags:
+        - homeserver
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeserverInfo'
+  "/api/v1/homeserver/power":
+    get:
+      tags:
+        - homeserver
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+    patch:
+      tags:
+        - homeserver
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/homeserver/delegate":
+    put:
+      tags:
+        - homeserver
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/kubernetes/install":
+    post:
+      tags:
+        - kubernetes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KubernetesInstall'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeboxResponse'
+  "/api/v1/firewall":
+    get:
+      tags:
+        - firewall
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirewallInfo'
+  "/api/v1/upnp":
+    get:
+      tags:
+        - upnp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpnpInfo'
+  "/api/v1/upnp/gateway/{gatewayIp}":
+    parameters:
+      - in: path
+        name: gatewayIp
+        schema:
+          type: string
+        required: true
+        description: The IP address of the gateway
+    get:
+      tags:
+        - upnp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpnpRouter'
+  "/api/v1/upnp/gateway/{gatewayIp}/forward":
+    parameters:
+      - in: path
+        name: gatewayIp
+        schema:
+          type: string
+        required: true
+        description: The IP address of the gateway
+    get:
+      tags:
+        - upnp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForwardInfoIpV4'
+    post:
+      tags:
+        - upnp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForwardInfoIpV4'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForwardInfoIpV4'
+    delete:
+      tags:
+        - upnp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForwardInfoIpV4'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForwardInfoIpV4'
+  "/api/v1/upnp/gateway/{gatewayIp}/port":
+    parameters:
+      - in: path
+        name: gatewayIp
+        schema:
+          type: string
+        required: true
+        description: The IP address of the gateway
+    get:
+      tags:
+        - upnp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int32
+  "/api/v1/host/network/dhcpv4":
+    get:
+      tags:
+        - network
+      description: Fetch the list of all DHCPv4 information on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DhcpV4'
+  "/api/v1/host/network/dhcpv6":
+    get:
+      tags:
+        - network
+      description: Fetch the list of all DHCPv6 information on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DhcpV6'
+  "/api/v1/host/network/interfaces":
+    get:
+      tags:
+        - network
+      description: Fetch the list of host interfaces on the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NetInterface'
+  "/api/v1/host/network/interface/default":
+    get:
+      tags:
+        - network
+      description: Fetch the default network interface for external communications
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetInterface'
+  "/api/v1/host/network/interface/{interfaceId}/freeipv4s":
+    parameters:
+      - in: path
+        name: interfaceId
+        schema:
+          type: string
+        required: true
+        description: The interface identifier NetInterface.id possibly URL encoded as per HTTP spec
+      - in: query
+        name: count
+        schema:
+          type: integer
+          format: int32
+        required: true
+        description: The number of IPs to fetch
+    get:
+      tags:
+        - network
+      description: Fetch free IPV4 addresses on the subnet of the network interface requested
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NetworkAddress'
+  "/api/v1/host/network/router/externalips":
+    get:
+      tags:
+        - network
+      description: Fetch IP addresses assigned to the internet router which are not bound to our internal network
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NetworkAddress'
+  "/api/v1/host/disk":
+    parameters:
+      - in: query
+        name: path
+        schema:
+          type: string
+        description: The relative path within the file-system to enumerate
+    get:
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DiskFileType'
+          description: The list of file types to fetch results for
+      tags:
+        - disk
+      description: Fetch the root drive information about the host
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiskResponse'
+    patch:
+      tags:
+        - disk
+      description: Updates the permissions of the specified file-system location to be compatible with Homebox
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The directory path doesn't exist, or access is not granted
+  "/api/v1/host/disk/directory":
+    post:
+      parameters:
+        - in: query
+          name: path
+          schema:
+            type: string
+          description: The directory name
+      tags:
+        - disk
+      description: Creates a new file-system directory as specified
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiskResponse'
+    delete:
+      parameters:
+        - in: query
+          name: path
+          schema:
+            type: string
+          description: The directory name
+      tags:
+        - disk
+      description: Deletes the file-system directory as specified if it is empty
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Directory not empty
+        '404':
+          description: Directory not found
+  "/api/v1/host/disk/file":
+    parameters:
+      - in: query
+        name: path
+        schema:
+          type: string
+        description: The relative path within the file-system
+    get:
+      tags:
+        - disk
+      description: |-
+        Determine if the file specified exists in the host file-system
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The file doesn't exist, or access is not granted
+    put:
+      tags:
+        - disk
+      description: |-
+        Touches the file, which is defined as creating the file if it doesn't exist, but do nothing if it exists except
+        potentially update the last modified date
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The file's parent directory doesn't exist, or access is not granted
+    # TODO deprecated, we should only really allow chunked requests, but reasons...
+    post:
+      tags:
+        - disk
+      description: |-
+        Determine if the file specified exists in the host file-system
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          '*/*':
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The file's parent directory doesn't exist, or access is not granted
+    delete:
+      tags:
+        - disk
+      description: |-
+        Delete the file
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: The file doesn't exist, or access is not granted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    NetworkAddress:
+      oneOf:
+        - $ref: '#/components/schemas/Ipv4Host'
+        - $ref: '#/components/schemas/Ipv6Host'
+    Ipv4Host:
+      type: object
+      required:
+        - ip
+      properties:
+        ip:
+          type: string
+    Ipv6Host:
+      type: object
+      required:
+        - ip
+      properties:
+        ip:
+          type: string
+    Ipv4HostAndMask:
+      type: object
+      required:
+        - ip
+        - mask
+      properties:
+        ip:
+          type: string
+        mask:
+          type: string
+    Ipv4HostPort:
+      type: object
+      required:
+        - ip
+        - port
+      properties:
+        ip:
+          type: string
+        port:
+          type: integer
+          format: int32
+    HomeboxError:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        subCode:
+          type: integer
+          format: int32
+        service:
+          type: string
+        message:
+          type: string
+        trace:
+          type: string
+    HomeboxResponse:
+      type: object
+      required:
+        - requestId
+      properties:
+        data:
+          type: object
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeboxResponses:
+      type: object
+      required:
+        - requestId
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
+    HomeserverInfo:
+      type: object
+      required:
+        - reachable
+      properties:
+        reachable:
+          type: boolean
+        cluster_locator:
+          $ref: '#/components/schemas/Ipv4HostPort'
+        external_locator:
+          $ref: '#/components/schemas/Ipv4HostPort'
+        version:
+          type: string
+    KubernetesInstall:
+      type: object
+      properties:
+        distribution:
+          type: string
+        args:
+          $ref: '#/components/schemas/MapData'
+    MapData:
+      type: object
+      additionalProperties: true
+    HostAgentInfo:
+      type: object
+      properties:
+        version:
+          type: string
+        platform:
+          $ref: '#/components/schemas/HostAgentPlatform'
+        capabilities:
+          type: array
+          items:
+            type: string
+    HostAgentPlatform:
+      type: object
+      properties:
+        arch:
+          type: string
+        os:
+          type: string
+        osVariant:
+          type: string
+    FirewallInfo:
+      type: object
+      properties:
+        interfaces:
+          type: array
+          items:
+            type: string
+        supports_rules:
+          type: boolean
+        supports_nat_forwarding:
+          type: boolean
+        actions:
+          type: object
+          additionalProperties:
+            type: string
+    UpnpInfo:
+      type: object
+      properties:
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpnpRouter'
+    UpnpRouter:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/UpnpDevice'
+        internet_ipv4:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Host'
+        internal_ipv4:
+          $ref: '#/components/schemas/Ipv4Host'
+    UpnpDevice:
+      type: object
+      properties:
+        deviceType:
+          type: string
+        udn:
+          type: string
+        name:
+          type: string
+        manufacturer_name:
+          type: string
+        manufacturer_url:
+          type: string
+        model_name:
+          type: string
+        model_url:
+          type: string
+        model_description:
+          type: string
+        model_number:
+          type: string
+        serial_number:
+          type: string
+        upc:
+          type: string
+        presentation_url:
+          type: string
+    IpProtocol:
+      type: string
+      enum:
+        - TCP
+        - UDP
+    ForwardInfoIpV4:
+      type: object
+      properties:
+        router:
+          $ref: '#/components/schemas/Ipv4Host'
+        ip_protocol:
+          $ref: '#/components/schemas/IpProtocol'
+        from_binding:
+          $ref: '#/components/schemas/Ipv4HostPort'
+        to_binding:
+          $ref: '#/components/schemas/Ipv4HostPort'
+    # TODO array of icons for easier selections
+    NetInterface:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        up:
+          type: boolean
+        virtual:
+          type: boolean
+        tunnel:
+          type: boolean
+        dhcp_configured:
+          type: boolean
+        ipv4_gateway:
+          $ref: '#/components/schemas/Ipv4Host'
+        ipv4_addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4HostAndMask'
+        physical_addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetMacAddress'
+        dhcpv4:
+          $ref: '#/components/schemas/DhcpV4'
+        dhcpv6:
+          $ref: '#/components/schemas/DhcpV6'
+    DhcpV4:
+      type: object
+      properties:
+        machine_id:
+          $ref: '#/components/schemas/NetMacAddress'
+        options:
+          $ref: '#/components/schemas/DhcpOptions'
+    DhcpV6:
+      type: object
+      properties:
+        machine_id:
+          $ref: '#/components/schemas/NetMacAddress'
+        options:
+          $ref: '#/components/schemas/DhcpOptions'
+    NetMacAddress:
+      type: object
+      properties:
+        mac_address:
+          type: string
+        synthetic:
+          type: boolean
+    DhcpOptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/DhcpOption'
+    DhcpOption:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          $ref: '#/components/schemas/DhcpOptionType'
+        bytes:
+          type: string
+          format: byte
+        vendored:
+          type: boolean
+        vendor:
+          type: string
+        addresses:
+          type: array
+          items:
+            type: string
+    DhcpOptionType:
+      type: string
+      enum:
+        - UNKNOWN
+        - PAD
+        - SUBNET_MASK
+        - TIME_OFFSET
+        - ROUTER
+        - UNIX_TIME_SERVER
+        - WINS_SERVERS
+        - DNS_SERVERS
+        - SYSLOG_SERVERS
+        - QUOTE_SERVERS
+        - LPR_SERVERS
+        - IMPRESS_SERVERS
+        - RLP_SERVERS
+        - HOSTNAME
+        - BOOT_FILE
+        - MERIT_DUMP_FILE
+        - DOMAIN_NAME
+        - SWAP_SERVERS
+        - ROOT_PATH
+        - EXTENSION_FILE
+        - FORWARD
+        - SOURCE_ROUTING_ENABLED
+        - ROUTER_AUTO_DISCOVERY
+        - ROUTER_SOLICITATION_ADDRESS
+        - STATIC_ROUTES
+        - VENDOR_SPECIFIC
+        - NETBIOS_NAME_SERVERS
+        - NETBIOS_DISTRIBUTION_SERVERS
+        - NETBIOS_NODE_TYPE
+        - NETBIOS_SCOPE
+        - DHCP_LEASE
+        - DHCP_MESSAGE_TYPE
+        - DHCP_SERVER_IP
+        - DOMAIN_SEARCH_PROVIDERS
+        - CLASSLESS_STATIC_ROUTE
+        - WEB_PROXY_AUTO_DISCOVERY
+    DiskFileType:
+      type: string
+      enum:
+        - DIRECTORY
+        - FILE
+        - SPECIAL
+        - VIRTUAL
+    DiskItemInfo:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/DiskFileType'
+        fileSize:
+          type: integer
+          format: int64
+    DiskDirectory:
+      type: object
+      required:
+        - location
+        - type
+      properties:
+        location:
+          type: string
+        type:
+          $ref: '#/components/schemas/DiskFileType'
+        size:
+          type: integer
+          format: int64
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskItemInfo'
+    DiskResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DiskDirectory'
+        error:
+          $ref: '#/components/schemas/HomeboxError'
+        request_id:
+          type: string
