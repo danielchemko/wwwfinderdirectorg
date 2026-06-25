@@ -1,6 +1,26 @@
 <html lang="en">
-<h2>Temporary Homebox Landing Page</h2>
-<p>Hello, this is a temporary page to get the latest Homebox software releases!</p>
+<body>
+<h2>Homebox [Temporary Landing Page]</h2>
+
+<p>Homebox has been developed to help people host and build online apps and communities. The software should ideally run
+    on any common computer hardware / operating system, but presently it only supports Linux installed computers.</p>
+
+<p>If you have a spare computer you aren't doing anything with, you could turn it into your own self-hosted internet
+    available web service!</p>
+
+<p>Homebox is designed to be simple and straightforward, and we try hard to make the system accessible to people of all
+    computer experiences. If you're a novice or a computer pro, we hope that Homebox will help to unlock your software
+    app hosting future.</p>
+
+<p>In this very early launch period, Homebox may not be entirely ready for important projects, and not all features are
+    ready to go. If you're a having a hard time figuring out how to use Homebox, we probably screwed up making the tool
+    as easily accessible as we'd hope.</p>
+
+<p>Although this is entirely designed for people of all experience levels, it's very possible that there are still some
+    confusing aspects of Homebox which we could do a better job clarifying. We will eventually include an in-app
+    feedback form, but for the time being, leave any immediate comments to
+    <a href="mailto:feedback@finderdirect.org">feedback@finderdirect.org</a>
+</p>
 
 <ul>
     <li><a href="https://files.finderdirect.org/releases/homebox-ha-0.0.1-x86_64.tar.gz">Linux 64 BIT X86_64 (Most
@@ -8,4 +28,23 @@
     <li><a href="https://files.finderdirect.org/releases/homebox-ha-0.0.1-aarch64.tar.gz">Linux 64 BIT ARM (Raspberry
         PI, Asahi Linux)</a></li>
 </ul>
+
+<h3>Setup Instructions</h3>
+
+<div>
+    <h4>Simple Command Line Setup (Linux X86_64)</h4>
+    <blockquote>
+        <code>curl https://files.finderdirect.org/releases/homebox-ha-0.0.1-x86_64.tar.gz --output
+            /tmp/homebox-ha-0.0.1-x86_64.tar.gz; tar zxf /tmp/homebox-ha-0.0.1-x86_64.tar.gz -C /tmp; sudo
+            /tmp/homebox-ha-x86_64; rm /tmp/homebox-ha-x86_64; rm /tmp/homebox-ha-0.0.1-x86_64.tar.gz</code>
+    </blockquote>
+
+    <h4>Simple Command Line Setup (Linux ARM 64)</h4>
+    <blockquote>
+        <code>curl https://files.finderdirect.org/releases/homebox-ha-0.0.1-aarch64.tar.gz --output
+            /tmp/homebox-ha-0.0.1-aarch64.tar.gz; tar zxf /tmp/homebox-ha-0.0.1-aarch64.tar.gz -C /tmp; sudo
+            /tmp/homebox-ha-aarch64; rm /tmp/homebox-ha-aarch64; rm /tmp/homebox-ha-0.0.1-aarch64.tar.gz</code>
+    </blockquote>
+</div>
+</body>
 </html>
